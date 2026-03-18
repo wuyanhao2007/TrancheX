@@ -1,0 +1,407 @@
+{
+  "_note": "Deployed on 2026-03-18T19:24:58.343Z by deployMockRWA.js",
+  "assets": [
+    {
+      "symbol": "TBILLS_USD",
+      "name": "Tokenized T-Bills USD",
+      "address": "0x423B7cEc9ba6A00edBdD72850d9Fa8DC584Bc3a3",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "ACCREDITED_INVESTOR"
+      ]
+    },
+    {
+      "symbol": "INV_GRADE_BOND_1",
+      "name": "Investment Grade Bond I",
+      "address": "0x95B5Bc4B573141180E67eb73EAB806CF80898761",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "ACCREDITED_INVESTOR"
+      ]
+    },
+    {
+      "symbol": "INV_GRADE_BOND_2",
+      "name": "Investment Grade Bond II",
+      "address": "0x22403F3aB7030Cac2f8D7617bCE3B8a7aFF44605",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "ACCREDITED_INVESTOR"
+      ]
+    },
+    {
+      "symbol": "PRIVATE_CREDIT_1",
+      "name": "Private Credit Fund I",
+      "address": "0xD8347640A0600756cEaC2467E1A3762e426AA138",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "QUALIFIED_PURCHASER"
+      ]
+    },
+    {
+      "symbol": "PRIVATE_CREDIT_2",
+      "name": "Private Credit Fund II",
+      "address": "0x7f952F4A20ac40834ea04949C98c1d4cD941359B",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "QUALIFIED_PURCHASER"
+      ]
+    },
+    {
+      "symbol": "REAL_ESTATE_URBAN",
+      "name": "Urban Real Estate Token",
+      "address": "0xB85388C162160bd198E70E1003973F2268B969d8",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "ACCREDITED_INVESTOR",
+        "JURISDICTION_US"
+      ]
+    },
+    {
+      "symbol": "REAL_ESTATE_SUBURB",
+      "name": "Suburban Real Estate Token",
+      "address": "0xe6cBdb10e0BE81918eBf2Ed0822fcf04455dcdBF",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "ACCREDITED_INVESTOR",
+        "JURISDICTION_US"
+      ]
+    },
+    {
+      "symbol": "REAL_ESTATE_COASTAL",
+      "name": "Coastal Real Estate Token",
+      "address": "0xB22cbBA2288a2fa21717d6cffE4ac6046095348B",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "ACCREDITED_INVESTOR",
+        "JURISDICTION_US"
+      ]
+    },
+    {
+      "symbol": "REIT_GLOBAL",
+      "name": "Global REIT Token",
+      "address": "0x9B36FB145a31f0C1A0F7C2c5432Be0C881D58EA3",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "ACCREDITED_INVESTOR"
+      ]
+    },
+    {
+      "symbol": "DATA_CENTER_ASSET",
+      "name": "Data Center Infrastructure Token",
+      "address": "0x18286c68287919A8D80cD339510D4fCa2dA69341",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "QUALIFIED_PURCHASER"
+      ]
+    },
+    {
+      "symbol": "POWER_PLANT_ASSET",
+      "name": "Power Plant Asset Token",
+      "address": "0x627535D06B796E2c03F817ca45EF2a7d13B7393A",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "QUALIFIED_PURCHASER",
+        "ENERGY_COMPLIANCE"
+      ]
+    },
+    {
+      "symbol": "GOLD_OZ",
+      "name": "Tokenized Gold (oz)",
+      "address": "0xab7A9A3D3db4Ff5fCf970FC8639c9DcFf742DF57",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML"
+      ]
+    },
+    {
+      "symbol": "SILVER_OZ",
+      "name": "Tokenized Silver (oz)",
+      "address": "0x47790D60D0C3ed40021991c8662919bd0055614E",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML"
+      ]
+    },
+    {
+      "symbol": "RARE_METAL_1",
+      "name": "Rare Metal Token I",
+      "address": "0xA36726c87543AeE40cfC25B4dBb668Eb775f0611",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML"
+      ]
+    },
+    {
+      "symbol": "ENERGY_OIL",
+      "name": "Tokenized Oil Energy",
+      "address": "0xc43212c8b1a020E2093cC95423aad410f6CD9486",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "ENERGY_COMPLIANCE"
+      ]
+    },
+    {
+      "symbol": "ENERGY_GAS",
+      "name": "Tokenized Natural Gas",
+      "address": "0xEEa5B7e9C95d2c6fe867ff212861F3A1DA12AbaB",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "ENERGY_COMPLIANCE"
+      ]
+    },
+    {
+      "symbol": "HEDGEABLE_COMMODITY_1",
+      "name": "Hedgeable Commodity Token I",
+      "address": "0xA0653e62df85799B7B7dae45BC3B3f0fD4d6356f",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "QUALIFIED_PURCHASER"
+      ]
+    },
+    {
+      "symbol": "MUNICIPAL_BOND_1",
+      "name": "Municipal Bond Token I",
+      "address": "0x7Daa40221256a4302F3057c4Bde837c4Cfd7efb3",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "ACCREDITED_INVESTOR",
+        "JURISDICTION_US"
+      ]
+    },
+    {
+      "symbol": "INFRA_DEBT_1",
+      "name": "Infrastructure Debt Token I",
+      "address": "0x996EbD9D8D6edECc25f6d8451CaD71389B93EFfb",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "QUALIFIED_PURCHASER"
+      ]
+    },
+    {
+      "symbol": "SPECIAL_PROJECT_1",
+      "name": "Special Project Token I",
+      "address": "0xFc35D0Df77B5B186105eDa7AA23da73F35432b91",
+      "decimals": 18,
+      "isRWA": true,
+      "complianceModules": [
+        "KYC",
+        "AML",
+        "QUALIFIED_PURCHASER"
+      ]
+    },
+    {
+      "symbol": "WBTC",
+      "name": "Wrapped Bitcoin",
+      "address": "0xe8D7B09cF25149414e4Eb049393CA0F553475373",
+      "decimals": 8,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "WETH",
+      "name": "Wrapped Ether",
+      "address": "0x8F3aBE18FAb4C6FE16b105e7dD50971c200a729A",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "USDC.e",
+      "name": "USD Coin (Bridged)",
+      "address": "0xF10afaBe97f0E0022613bfdf4cf418BB29d452E8",
+      "decimals": 6,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "USDT",
+      "name": "Tether USD",
+      "address": "0xD85F3639bE1A066Ac81BB372250bf032bb324164",
+      "decimals": 6,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "DAI",
+      "name": "Dai Stablecoin",
+      "address": "0x80e8036f9d4BCF03003Ee4CF93378Acd8CC0032c",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "LINK",
+      "name": "ChainLink Token",
+      "address": "0xA8152DCcc34d2F897C939B0240a902EaF06E9626",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "UNI",
+      "name": "Uniswap",
+      "address": "0xE832EB1306417f4635Adc01923AB347f2C92763A",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "AAVE",
+      "name": "Aave Token",
+      "address": "0x4b4af68aCE4806604Bd3b9F21fEA96dEFe266d5C",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "SUSHI",
+      "name": "SushiToken",
+      "address": "0x05Fd5d28B0e7c0f1bAaF909D467E6fBF374d65af",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "COMP",
+      "name": "Compound",
+      "address": "0x73824fd9005112a243e984c9E8697f41454C3C35",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "MKR",
+      "name": "Maker",
+      "address": "0xB94B8dA4Ad071cF840AEb2e5B716F908a6E3636E",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "SNX",
+      "name": "Synthetix Network",
+      "address": "0x78B4B90eDDC03493D8A8B078dD381E5dd72762b8",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "YFI",
+      "name": "yearn.finance",
+      "address": "0xB4ac7C5544BA24aE1b96136E142ebc0699006170",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "CRV",
+      "name": "Curve DAO Token",
+      "address": "0x1D741B68938A9507C8116e1563971cc3a96F4d3A",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "BAL",
+      "name": "Balancer",
+      "address": "0x0D982682A6F0a8fc5b08d8b107327a0343d1ba36",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "MATIC",
+      "name": "Matic Token",
+      "address": "0x4bb53a73067A76B37Ed59E938ae45369EE7CE4a9",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "MANA",
+      "name": "Decentraland MANA",
+      "address": "0xDE6C05447A9E1e7F4EbD3108D1A969FE88f8084B",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "ZRX",
+      "name": "0x Protocol Token",
+      "address": "0x97e83f0a47c39981bE34CE912145c70dD86F5Dc0",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "BAT",
+      "name": "Basic Attention Token",
+      "address": "0x4F01cF7e2ADCb182988B94e77bDd868F439f2E9d",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    },
+    {
+      "symbol": "REN",
+      "name": "Republic Protocol",
+      "address": "0x0AF44E3d35C15F889587e62Fd2dC8C3098918a36",
+      "decimals": 18,
+      "isRWA": false,
+      "complianceModules": []
+    }
+  ]
+}

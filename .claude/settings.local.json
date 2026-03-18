@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npx hardhat:*)",
+      "Bash(npm create:*)",
+      "Bash(/Users/brandon_wu/eth/TrancheX/frontend/.env.example:*)",
+      "Bash(npm run:*)",
+      "Bash(node /Users/brandon_wu/eth/TrancheX/scripts/generateHistory.js)"
+    ]
+  }
+}
