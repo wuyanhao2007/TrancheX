@@ -56,6 +56,11 @@ contract BasketManager is AccessControl, Pausable {
 
     // ── Basket metadata ────────────────────────────────────────────────────
 
+    /// @dev Basket lifecycle: 0 = Active, 1 = Inactive, 2 = Destroyed
+    uint8 public constant STATUS_ACTIVE    = 0;
+    uint8 public constant STATUS_INACTIVE  = 1;
+    uint8 public constant STATUS_DESTROYED = 2;
+
     struct Basket {
         address token;               // ERC-20 share token address
         bool    isERC3643;           // whether token is a permissioned ERC3643Basket
@@ -65,6 +70,7 @@ contract BasketManager is AccessControl, Pausable {
         string  symbol;
         string  metadataJSON;        // arbitrary JSON metadata stored on-chain
         string[] complianceModules;  // aggregated from ERC3643 assets
+        uint8   status;              // 0=Active, 1=Inactive, 2=Destroyed
     }
 
     mapping(uint256 => Basket) public basketData; // basketId => Basket
@@ -116,6 +122,8 @@ contract BasketManager is AccessControl, Pausable {
         int256[] deltas
     );
     event EmergencyWithdraw(address indexed token, address indexed to, uint256 amount);
+    event BasketDeactivated(uint256 indexed basketId, bool destroyed);
+    event BasketWeightsUpdated(uint256 indexed basketId);
 
     // ── Constructor ────────────────────────────────────────────────────────
 
@@ -306,12 +314,58 @@ contract BasketManager is AccessControl, Pausable {
      * @param basketId     Target basket.
      * @return sharesMinted Number of shares minted (18 decimals).
      */
+    /**
+     * @notice Deactivate or permanently destroy a basket.
+     * @param basketId  Target basket.
+     * @param destroyed true = STATUS_DESTROYED (irreversible), false = STATUS_INACTIVE (reversible).
+     */
+    function deactivateBasket(uint256 basketId, bool destroyed)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(basketId < basketsCount, "Invalid basketId");
+        basketData[basketId].status = destroyed ? STATUS_DESTROYED : STATUS_INACTIVE;
+        emit BasketDeactivated(basketId, destroyed);
+    }
+
+    /**
+     * @notice Reactivate a basket that was set to STATUS_INACTIVE.
+     *         Cannot reactivate a STATUS_DESTROYED basket.
+     */
+    function reactivateBasket(uint256 basketId) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(basketId < basketsCount, "Invalid basketId");
+        require(basketData[basketId].status == STATUS_INACTIVE, "Not inactive");
+        basketData[basketId].status = STATUS_ACTIVE;
+    }
+
+    /**
+     * @notice Update target weights for a basket (manager only).
+     *         Basket must be active. Weights must sum to 10000.
+     */
+    function updateBasketWeights(uint256 basketId, uint256[] calldata weights_)
+        external
+        onlyRole(MANAGER_ROLE)
+    {
+        require(basketId < basketsCount, "Invalid basketId");
+        require(basketData[basketId].status == STATUS_ACTIVE, "Basket not active");
+        require(weights_.length == basketData[basketId].assets.length, "Length mismatch");
+        uint256 sum;
+        for (uint256 i = 0; i < weights_.length; i++) sum += weights_[i];
+        require(sum == 10000, "Weights must sum to 10000");
+        // Overwrite weights in-place
+        for (uint256 i = 0; i < weights_.length; i++) {
+            basketData[basketId].weights[i] = weights_[i];
+        }
+        emit BasketWeightsUpdated(basketId);
+    }
+
     function purchase(
         uint256 stableAmount,
         address recipient,
         uint256 basketId
     ) external whenNotPaused returns (uint256 sharesMinted) {
         require(basketId < basketsCount, "Invalid basketId");
+        require(basketData[basketId].status == STATUS_ACTIVE, "Basket not active");
         Basket storage b = basketData[basketId];
 
         // ── Compliance check for ERC-3643 baskets ─────────────────────────
@@ -404,6 +458,7 @@ contract BasketManager is AccessControl, Pausable {
         uint256 basketId
     ) external onlyRole(MANAGER_ROLE) {
         require(basketId < basketsCount, "Invalid basketId");
+        require(basketData[basketId].status == STATUS_ACTIVE, "Basket not active");
         require(deltas.length == basketData[basketId].assets.length, "Deltas length mismatch");
         emit RebalanceExecuted(basketId, msg.sender, deltas);
     }
@@ -447,6 +502,11 @@ contract BasketManager is AccessControl, Pausable {
     /// @notice Returns the on-chain metadataJSON string for a basket.
     function getBasketMetadata(uint256 basketId) public view returns (string memory) {
         return basketData[basketId].metadataJSON;
+    }
+
+    /// @notice Returns the status of a basket (0=Active, 1=Inactive, 2=Destroyed).
+    function getBasketStatus(uint256 basketId) external view returns (uint8) {
+        return basketData[basketId].status;
     }
 
     /**
