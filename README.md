@@ -1,235 +1,142 @@
-# TrancheX — RWA Index Fund MVP
+# TrancheX
 
-Multi-basket tokenized fund on **HashKey Chain Testnet** (chainId 133).
+RWA baskets on HashKey Chain.
 
-Supports:
-- Standard ERC-20 index baskets (`IndexToken`)
-- Permissioned ERC-3643 baskets (`ERC3643Basket`) with on-chain attestation-based compliance
-- Off-chain oracle pricing, NAV calculation, purchase/redeem, and manager rebalancing
+TrancheX is a testnet dApp for building and managing token baskets from on-chain assets. Users can buy individual tokens or basket shares with USDC. Admins can create baskets, adjust weights, rebalance holdings, and retire baskets.
 
----
+## What TrancheX does
 
-## Quick Start
+* shows a catalog of single tokens and baskets
+* lets users buy or redeem with USDC
+* prices baskets from underlying asset NAV
+* supports basket-level compliance tags
+* lets admins create baskets by selecting tokens and setting weights
+* lets admins rebalance or deactivate baskets
 
-### 1. Install dependencies
+## Why it exists
+
+RWA products are often fragmented. TrancheX packages tokenized assets into a basket that behaves more like an ETF:
+
+* one entry point
+* transparent basket pricing
+* clear compliance requirements
+* simple mint and redeem flow
+
+## How it works
+
+### Single tokens
+
+Each token has its own page, price view, and buy flow. The app reads token history files to draw charts and display asset data.
+
+### Baskets
+
+A basket is built from a set of tokens and weights. The basket price is derived from its NAV divided by total supply.
+
+### Compliance
+
+Some assets carry compliance modules such as KYC, AML, accredited investor checks, or transfer restrictions. Basket compliance is the unique union of the modules from its underlying assets.
+
+### Admin flow
+
+Admins can:
+
+* select tokens from the catalog
+* assign weights
+* mint a basket
+* rebalance a basket
+* destroy or deactivate a basket
+
+## Stack
+
+* HashKey Chain testnet
+* Solidity
+* Hardhat 2.22
+* ethers v6
+* React + Vite
+* Tailwind CSS
+
+## Local setup
+
+### Install
 
 ```bash
 npm install
+cd frontend
+npm install
 ```
 
-### 2. Configure environment
+### Configure environment
 
-```bash
-cp .env.example .env
-# Edit .env:
-#   PRIVATE_KEY     — deployer private key (with or without 0x prefix)
-#   RPC_URL         — default: https://testnet.hsk.xyz
-#   STABLE_ADDRESS  — testnet USDC.e contract address
-#   ADMIN_ADDRESS   — address that receives DEFAULT_ADMIN_ROLE + MANAGER_ROLE
-#                     (defaults to deployer address if unset)
-#   ASSET_ADDRESSES — comma-separated token addresses (optional;
-#                     reads data/assets.json if absent)
+Create a `.env` file in the project root:
+
+```env
+PRIVATE_KEY=0x...
+RPC_URL=https://testnet.hsk.xyz
+ADMIN_ADDRESS=0x...
+STABLE_ADDRESS=0x...
+ASSET_ADDRESSES=0x...,0x...
 ```
 
-### 3. Compile contracts
+Create a `.env.local` file in `frontend/`:
+
+```env
+VITE_RPC_URL=https://testnet.hsk.xyz
+VITE_MANAGER_ADDRESS=0x...
+VITE_INDEX_ADDRESS=0x...
+VITE_STABLE_ADDRESS=0x...
+VITE_ADMIN_ADDRESS=0x...
+```
+
+### Compile contracts
 
 ```bash
 npx hardhat compile
 ```
 
-### 4. Deploy 40 mock tokens (testnet demo)
+### Deploy to testnet
 
 ```bash
-# Deploys 20 RWA tokens (ERC3643Basket) + 20 normal tokens (MockRWA)
-# and writes real addresses to data/assets.json
-npx hardhat run --network hashkeyTestnet scripts/deployMockRWA.js
-```
-
-### 5. Generate price history (optional — used by frontend charts)
-
-```bash
-node scripts/generateHistory.js
-```
-
-### 6. Deploy core contracts to HashKey Testnet
-
-```bash
-# Reads addresses from data/assets.json (populated in step 4)
 npx hardhat run --network hashkeyTestnet scripts/deploy.js
 ```
 
-Expected output (single JSON line):
-```json
-{
-  "indexAddress":        "0x…",
-  "managerAddress":      "0x…",
-  "oracleAddress":       "0x…",
-  "stableAddress":       "0x…",
-  "assetsCount":         40,
-  "attestationRegistry": "0x…",
-  "tokenFactory":        "0x…",
-  "adminAddress":        "0x…"
-}
-```
-
-### 7. Run tests
-
-```bash
-npx hardhat test
-```
-
-All 12 tests should pass.
-
-### 8. Launch frontend
+### Run the frontend
 
 ```bash
 cd frontend
-cp .env.example .env
-# Edit frontend/.env with addresses from deploy output:
-#   VITE_MANAGER_ADDRESS       — from managerAddress
-#   VITE_STABLE_ADDRESS        — from stableAddress
-#   VITE_ORACLE_ADDRESS        — from oracleAddress
-#   VITE_ATTESTATION_REGISTRY  — from attestationRegistry
-#   VITE_ADMIN_ADDRESS         — from adminAddress (for display only)
-npm install
 npm run dev
 ```
 
-Open http://localhost:5173
+## Project structure
 
----
-
-## Minting Flow (Admin)
-
-1. Connect a wallet that holds `DEFAULT_ADMIN_ROLE` on the BasketManager.
-   The **Admin** tab only appears after an on-chain `hasRole` check passes.
-
-2. On the **Admin** tab, the token grid shows all 40 assets.
-   **Click** a card to select/deselect it (blue border = selected, ✓ badge).
-
-3. Once at least one token is selected, a **Weight Editor** appears.
-   - Each row shows the token symbol and a decimal input (0–1).
-   - The current sum is displayed; must equal `1.0000 ±0.001` to enable minting.
-   - Weights default to equal distribution on each new selection.
-
-4. Fill in **Basket Name** and **Symbol**, then click **Mint Basket**.
-   - Frontend converts decimal weights → integer basis points:
-     `bps[i] = Math.round(w[i] * 10000)`, then adjusts the last entry so
-     `sum(bps) == 10000` exactly.
-   - Builds a `metadataJSON` string embedding asset addresses, weights, and
-     creation timestamp.
-   - Calls `manager.mintBasket(assets, weightsBp, name, symbol, metadataJSON)`.
-
-5. After the tx confirms, selected tokens are un-highlighted and the new basket
-   appears in the **Fund** tab basket list.
-
-### Contract: `mintBasket` signature
-
-```solidity
-function mintBasket(
-    address[] calldata assets_,
-    uint256[] calldata weights_,   // basis points, must sum to 10000
-    string calldata name_,
-    string calldata symbol_,
-    string calldata metadataJSON_  // arbitrary JSON stored on-chain
-) external onlyRole(DEFAULT_ADMIN_ROLE) returns (uint256 basketId);
+```text
+contracts/        Solidity contracts
+scripts/          Deployment and helper scripts
+frontend/         React app
+data/             Asset metadata and price history
 ```
 
-```solidity
-function getBasketMetadata(uint256 basketId) public view returns (string memory);
-```
+## Demo flow
 
-Event emitted:
-```solidity
-event BasketMinted(
-    uint256 indexed basketId,
-    address indexed token,
-    bool isERC3643,
-    string name,
-    string symbol,
-    string metadataJSON
-);
-```
+1. Connect a wallet on HashKey Chain testnet.
+2. Browse the token catalog.
+3. Admin selects tokens and creates a basket.
+4. User buys a token or basket with USDC.
+5. User sees price, history, and compliance tags.
+6. Admin rebalances or deactivates a basket.
 
----
+## Notes
 
-## Architecture
+This project is a hackathon prototype.
 
-```
-contracts/
-  IndexToken.sol         — Standard ERC-20 share token (MINTER_ROLE gated)
-  ERC3643Basket.sol      — Permissioned share token with allowlist + compliance modules
-  MockPriceOracle.sol    — Price oracle (price in 1e18 USDC units)
-  AttestationRegistry.sol— EIP-712 signed compliance attestations
-  TokenFactory.sol       — Deploys IndexToken / ERC3643Basket (keeps BasketManager lean)
-  BasketManager.sol      — Core: mintBasket, purchase, redeem, executeRebalance
-  MockRWA.sol            — ERC-20 test token with mintTo
+Some parts are simulated for demo purposes, including:
 
-scripts/
-  deploy.js              — Full deployment + basket 0 creation
-  generateHistory.js     — 180-day deterministic price history for 20 tokens
-  applyRebalance.js      — Submit executeRebalance + simulate token movements
-  resolveHashFans.js     — Fetch real HashFans addresses (requires network)
+* token price history
+* basket history generation
+* compliance labels
+* basket creation metadata
 
-data/
-  assets.json            — 20 token definitions (placeholder addresses)
-  prices/<SYMBOL>.json   — 180-day price series
+The chain interactions, role checks, and mint/redeem flows are real on testnet.
 
-frontend/src/
-  pages/
-    AdminDashboard.jsx   — Token grid, MintBasket modal, Rebalance panel
-    UserDashboard.jsx    — Basket list, per-basket purchase/redeem/compliance
-  components/
-    TokenCard.jsx        — Token card with SVG sparkline
-    BasketCard.jsx       — Basket summary card
-  hooks/useWeb3.js       — MetaMask connect + HashKey Testnet switch
-  rebalancer.js          — Off-chain delta computation
-  abis/                  — Contract ABIs (auto-generated from artifacts)
-  config.js              — Addresses + chain config
+## License
 
-tests/
-  basket.test.js         — 8 tests covering full lifecycle
-```
-
-## Key formulas
-
-| Formula | Expression |
-|---|---|
-| `stableScaling` | `10^(18 - stableDecimals)` |
-| `getNav(id)` | `Σ(bal[i] * price[i] / 1e18) + stableBal * stableScaling` |
-| `navPerShare(id)` | `(nav * 1e18) / totalSupply` |
-| `sharesMinted` | `(stableAmount * stableScaling * 1e18) / navPerShare` |
-| `stableReturned` | `(shares * navPerShare / 1e18) / stableScaling` |
-
-## ABI files
-
-ABIs in `frontend/src/abis/` are generated at compile time. To regenerate after contract changes:
-
-```bash
-npx hardhat compile
-node -e "
-const fs=require('fs'),path=require('path');
-['BasketManager','IndexToken','ERC3643Basket','MockPriceOracle','AttestationRegistry','TokenFactory','MockRWA'].forEach(c=>{
-  const art=path.join('artifacts/contracts',c+'.sol',c+'.json');
-  const {abi}=JSON.parse(fs.readFileSync(art));
-  fs.writeFileSync('frontend/src/abis/'+c+'.json',JSON.stringify(abi,null,2));
-  console.log('wrote',c+'.json');
-});
-"
-```
-
-## Resolving real HashFans token addresses
-
-```bash
-node scripts/resolveHashFans.js
-# Updates data/assets.json with live addresses if network is available
-```
-
-## Rebalancing
-
-```bash
-# After deploying, generate deltas.json with the frontend rebalancer
-# or compute manually, then:
-npx hardhat run --network hashkeyTestnet scripts/applyRebalance.js
-# Set DELTAS_FILE env to point to your deltas.json
-```
+MIT
